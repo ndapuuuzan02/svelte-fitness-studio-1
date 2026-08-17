@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilates Reformer Aurora | Svelte Fitness Studio | Free Intro Class</title>
+  <meta name="description" content="Aurora's boutique Pilates Reformer & fitness studio. Small-group classes, certified instructors, injury-free results. Claim your $15 intro pass today!" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-primary: #FAFAFA;
+      --bg-darker: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F3F4F6;
+      --fg-primary: #111827;
+      --fg-dim: #334155;
+      --muted: #64748B;
+      --accent: #059669;
+      --accent-bright: #047857;
+      --accent-dim: #065F46;
+      --accent-glow: rgba(5, 150, 105, 0.28);
+      --silver: #95A5A6;
+      --silver-dim: #64748B;
+      --border: #E5E7EB;
+      --border-light: #CBD5E1;
+      --font-display: "Bebas Neue", sans-serif;
+      --font-heading: "Oswald", sans-serif;
+      --font-body: "Archivo", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--fg-primary);
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      overflow-x: hidden;
+    }
+
+    .font-display { font-family: var(--font-display); }
+    .font-heading { font-family: var(--font-heading); }
+    .font-mono { font-family: var(--font-mono); }
+
+    .bg-textured {
+      background-color: var(--bg-primary);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(5,150,105,0.08) 0%, transparent 36%),
+        radial-gradient(circle at 80% 70%, rgba(100,116,139,0.10) 0%, transparent 42%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23r)' opacity='0.22'/></svg>");
+      background-blend-mode: normal, normal, overlay;
+    }
+
+    .grain {
+      position: fixed;
+      inset: -10%;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='250'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay;
+      will-change: transform;
+    }
+
+    .scan-line {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .img-noir {
+      filter: grayscale(100%) contrast(1.4) brightness(0.72);
+      transition: filter 0.8s ease, transform 0.8s ease;
+    }
+
+    .photo-wrap:hover .img-noir { filter: grayscale(70%) contrast(1.35) brightness(0.82); transform: scale(1.05); }
+
+    .nav-link {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fg-dim);
+      transition: color 160ms ease;
+    }
+    .nav-link:hover { color: var(--accent); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 14px 22px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      box-shadow: 0 18px 40px var(--accent-glow);
+    }
+    .btn-primary:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 14px 22px;
+      border: 1px solid var(--border-light);
+      background: rgba(255,255,255,0.88);
+      color: var(--fg-primary);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .pulse { animation: pulseCta 2.4s ease-in-out infinite; }
+    @keyframes pulseCta {
+      0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow), 0 18px 40px var(--accent-glow); }
+      50% { box-shadow: 0 0 0 12px rgba(5,150,105,0), 0 18px 40px var(--accent-glow); }
+    }
+
+    .hero-reel { position: relative; min-height: 100vh; overflow: hidden; background: #050505; }
+    .reel-frame { position: absolute; inset: 0; opacity: 0; transition: opacity 1.5s ease; }
+    .reel-frame.active { opacity: 1; }
+    .reel-frame img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); }
+    .reel-frame.active img { animation: kenburns 7s ease-out forwards; }
+    @keyframes kenburns {
+      0% { transform: scale(1.08) translate(0,0); }
+      100% { transform: scale(1.22) translate(-2.5%,-2.5%); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.48) 32%, rgba(5,5,5,0.72) 72%, rgba(5,5,5,0.96) 100%),
+        linear-gradient(90deg, rgba(5,5,5,0.82) 0%, rgba(5,5,5,0.30) 52%, rgba(5,5,5,0.66) 100%),
+        radial-gradient(ellipse at 25% 60%, rgba(5,150,105,0.24) 0%, transparent 58%);
+    }
+
+    .text-stroke {
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.72);
+      color: transparent;
+    }
+
+    .headline-line { display: block; overflow: hidden; }
+    .headline-line span { display: inline-block; }
+
+    .reel-progress-shell {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 46px;
+      z-index: 10;
+      height: 3px;
+      background: rgba(255,255,255,0.16);
+    }
+    .reel-progress { height: 100%; width: 0%; background: var(--accent); }
+
+    .waveform span {
+      display: inline-block;
+      width: 3px;
+      height: 12px;
+      margin: 0 1px;
+      background: currentColor;
+      animation: wave 0.9s ease-in-out infinite;
+    }
+    .waveform span:nth-child(2) { animation-delay: .12s; }
+    .waveform span:nth-child(3) { animation-delay: .24s; }
+    @keyframes wave { 0%,100% { transform: scaleY(.4); } 50% { transform: scaleY(1.1); } }
+
+    .marquee-track {
+      width: max-content;
+      display: flex;
+      gap: 36px;
+      animation: marquee 24s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .section-marker {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+    .section-marker:before { content: ""; width: 42px; height: 1px; background: var(--accent); }
+
+    .number-display { font-family: var(--font-display); color: var(--accent); line-height: .85; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(34px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal-stagger.in-view > * { opacity: 1; transform: translateY(0); }
+    .reveal-stagger.in-view > *:nth-child(2) { transition-delay: .08s; }
+    .reveal-stagger.in-view > *:nth-child(3) { transition-delay: .16s; }
+    .reveal-stagger.in-view > *:nth-child(4) { transition-delay: .24s; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+    }
+    .card:hover { background: var(--bg-card-hover); box-shadow: 0 18px 45px rgba(15,23,42,0.10); }
+
+    .flip-card { perspective: 1200px; min-height: 460px; cursor: pointer; }
+    .flip-inner { position: relative; width: 100%; min-height: 460px; transform-style: preserve-3d; transition: transform .7s ease; }
+    .flip-card:hover .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stories-viewport {
+      overflow: hidden;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+    .stories-track {
+      display: flex;
+      gap: 24px;
+      will-change: transform;
+      user-select: none;
+    }
+    .story-card {
+      flex: 0 0 min(86vw, 410px);
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: transparent;
+    }
+    .dot.active { background: var(--accent); }
+
+    .goal-pill, .time-radio {
+      border: 1px solid var(--border-light);
+      color: var(--fg-dim);
+      background: #FFFFFF;
+      padding: 12px 14px;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .goal-pill.active, .time-radio.active { border-color: var(--accent); background: rgba(5,150,105,.10); color: var(--accent-dim); }
+
+    input, textarea {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid var(--border-light);
+      background: #FFFFFF;
+      color: var(--fg-primary);
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      outline: none;
+    }
+    input:focus, textarea:focus { border: 2px solid var(--accent); }
+
+    .sticky-cta {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 80;
+      transform: translateY(130%);
+      opacity: 0;
+      transition: transform .35s ease, opacity .35s ease;
+    }
+    .sticky-cta.show { transform: translateY(0); opacity: 1; }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 96px;
+      z-index: 100;
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .3s ease, opacity .3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 767px) {
+      .mobile-panel {
+        position: fixed;
+        top: 73px;
+        right: 0;
+        left: 0;
+        display: none;
+        background: rgba(255,255,255,.98);
+        border-bottom: 1px solid var(--border);
+        padding: 22px;
+      }
+      .mobile-panel.open { display: block; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Svelte Fitness Studio",
+      "description": "Boutique Pilates Reformer and fitness studio in Aurora, Ontario. Small-group classes, certified instructors, injury-conscious programming.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "520 Industrial Parkway South, Lower Level",
+        "addressLocality": "Aurora",
+        "addressRegion": "ON",
+        "postalCode": "L4G 6W8",
+        "addressCountry": "CA"
+      },
+      "telephone": "+1-416-709-3262",
+      "email": "info@sveltefitnessstudio.com",
+      "openingHours": "Tu,Th 08:00-20:00; We,Fr 08:00-12:00",
+      "priceRange": "$$",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 44.0065,
+        "longitude": -79.4503
+      },
+      "sameAs": [
+        "https://facebook.com/sveltefitnessstudio",
+        "https://instagram.com/svelte_studio"
+      ]
+    }
+  </script>
+
+</head>
+
+<body class="bg-textured">
+  <div class="grain" id="grain"></div>
+
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/90 border-b border-[var(--border)]">
+    <div class="max-w-[1600px] mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group" aria-label="Svelte Fitness Studio home">
+        <div class="w-9 h-9 bg-[var(--accent)] flex items-center justify-center text-white">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div>
+          <div class="font-display text-3xl leading-none tracking-wider">SVELTE FITNESS STUDIO</div>
+          <div class="font-mono text-[10px] text-[var(--muted)] tracking-[0.3em] mt-0.5">PILATES REFORMER + FITNESS</div>
+        </div>
+      </a>
+
+  <nav class="hidden lg:flex items-center gap-10" aria-label="Primary navigation">
+    <a href="#hero" class="nav-link">Home</a>
+    <a href="#curriculum" class="nav-link">Classes</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#coaches" class="nav-link">Instructors</a>
+    <a href="#booking" class="nav-link">Contact</a>
+  </nav>
+
+  <div class="flex items-center gap-4">
+    <a href="tel:+14167093262" class="hidden sm:inline-flex nav-link">Text: (416) 709-3262</a>
+    <a href="#booking" class="hidden md:inline-flex btn-primary pulse">Book Your Free Intro Class</a>
+    <button id="mobileToggle" class="lg:hidden w-11 h-11 border border-[var(--border-light)] flex items-center justify-center" aria-label="Open menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</div>
+
+<nav id="mobilePanel" class="mobile-panel lg:hidden" aria-label="Mobile navigation">
+  <div class="flex flex-col gap-5">
+    <a href="#hero" class="nav-link">Home</a>
+    <a href="#curriculum" class="nav-link">Classes</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#coaches" class="nav-link">Instructors</a>
+    <a href="#booking" class="nav-link">Contact</a>
+    <a href="#booking" class="btn-primary pulse">Book Your Free Intro Class</a>
+  </div>
+</nav>
+
+  </header>
+
+  <main>
+    <section id="hero" class="hero-reel">
+      <div class="absolute inset-0" id="reelContainer">
+        <div class="reel-frame active"><img class="img-noir" src="https://placehold.co/1920x1080/0a0a0a/059669?text=Fitness+Studio" alt="Fitness studio training scene" /></div>
+        <div class="reel-frame"><img class="img-noir" src="https://placehold.co/1920x1080/141414/059669?text=Pilates+Reformer" alt="Pilates Reformer class scene" /></div>
+        <div class="reel-frame"><img class="img-noir" src="https://placehold.co/1920x1080/0a0a0a/059669?text=Yoga+Class" alt="Yoga class scene" /></div>
+        <div class="reel-frame"><img class="img-noir" src="https://placehold.co/1920x1080/141414/059669?text=Total+Body+Sculpt" alt="Total Body Sculpt class scene" /></div>
+        <div class="reel-frame"><img class="img-noir" src="https://placehold.co/1920x1080/0a0a0a/059669?text=Community+Fitness" alt="Community fitness scene" /></div>
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="scan-line"></div>
+
+  <div class="relative z-10 min-h-screen flex items-end px-6 lg:px-10 pb-28 pt-32">
+    <div class="max-w-[1600px] w-full mx-auto">
+      <div class="max-w-6xl reveal in-view">
+        <div class="section-marker text-white mb-6"><span>Aurora's Supportive Fitness Studio</span></div>
+        <h1 class="font-display text-white text-[15vw] md:text-[10vw] lg:text-[8vw] leading-[0.85] mb-8">
+          <span class="headline-line"><span>Pilates Reformer</span></span>
+          <span class="headline-line"><span class="text-stroke">Classes in Aurora</span></span>
+          <span class="headline-line"><span>Small-Group <span class="text-[var(--accent)]">Boutique Fitness</span></span></span>
+        </h1>
+        <p class="text-white/90 text-lg md:text-2xl leading-relaxed max-w-3xl mb-8">Transform your strength, flexibility, and confidence in Aurora's most supportive studio. Certified instructors. Injury-conscious programming. Real results.</p>
+        <div class="flex flex-col sm:flex-row gap-4 mb-7">
+          <a href="#booking" class="btn-primary pulse">Book Your Free Intro Class →</a>
+          <a href="#booking" class="btn-secondary">View Class Schedule →</a>
+        </div>
+        <p class="font-mono text-[11px] md:text-xs tracking-[0.18em] uppercase text-white/80">★★★★★ 4.9/5 Google Reviews • 500+ Aurora Members • Certified Instructors</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute right-6 lg:right-10 bottom-20 z-20 flex items-center gap-4 text-white">
+    <div class="font-mono text-xs tracking-[0.22em]" id="chapterNumber">01 / 05</div>
+    <button id="muteToggle" class="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center" aria-label="Toggle audio">
+      <span class="waveform text-white"><span></span><span></span><span></span></span>
+    </button>
+  </div>
+
+  <div class="reel-progress-shell"><div class="reel-progress" id="reelProgress"></div></div>
+
+  <div class="absolute bottom-0 left-0 right-0 border-t border-white/10 bg-black/70 backdrop-blur-sm py-3 overflow-hidden z-10">
+    <div class="marquee-track font-display text-sm tracking-[0.25em] text-white/70">
+      <span>STRENGTH IS BUILT</span><span>NO SHORTCUTS</span><span>EARN YOUR PLACE</span><span>CREATE THE BEST VERSION OF YOU!</span><span>STRONGER . BETTER. TOGETHER</span>
+      <span>STRENGTH IS BUILT</span><span>NO SHORTCUTS</span><span>EARN YOUR PLACE</span><span>CREATE THE BEST VERSION OF YOU!</span><span>STRONGER . BETTER. TOGETHER</span>
+    </div>
+  </div>
+</section>
+
+<section id="stats" class="border-y border-[var(--border)] bg-[var(--bg-darker)] relative overflow-hidden">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10 py-16 lg:py-20">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 reveal-stagger">
+      <div class="border-l border-[var(--border-light)] pl-6">
+        <div class="number-display text-6xl md:text-7xl" data-count="500">0</div>
+        <div class="font-mono text-[11px] text-[var(--muted)] tracking-[0.2em] uppercase mt-2">Aurora Members</div>
+      </div>
+      <div class="border-l border-[var(--border-light)] pl-6">
+        <div class="number-display text-6xl md:text-7xl" data-count="8">0</div>
+        <div class="font-mono text-[11px] text-[var(--muted)] tracking-[0.2em] uppercase mt-2">Max Clients Per Class</div>
+      </div>
+      <div class="border-l border-[var(--border-light)] pl-6">
+        <div class="number-display text-6xl md:text-7xl" data-count="3">0</div>
+        <div class="font-mono text-[11px] text-[var(--muted)] tracking-[0.2em] uppercase mt-2">Certified Instructors</div>
+      </div>
+      <div class="border-l border-[var(--border-light)] pl-6">
+        <div class="number-display text-6xl md:text-7xl" data-count="4.9">0</div>
+        <div class="font-mono text-[11px] text-[var(--muted)] tracking-[0.2em] uppercase mt-2">Google Reviews</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="curriculum" class="py-24 lg:py-32">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-12 gap-8 mb-20 reveal">
+      <div class="lg:col-span-5">
+        <div class="section-marker mb-6"><span>02 — Curriculum</span></div>
+        <h2 class="font-display text-6xl md:text-7xl lg:text-8xl leading-[0.9]">
+          Our Pilates Reformer<br>
+          <span class="text-stroke" style="-webkit-text-stroke-color: var(--silver-dim);">Fitness Classes</span><br>
+          <span class="text-[var(--accent)]">in Aurora</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7 flex flex-col justify-end">
+        <p class="text-[var(--fg-dim)] text-lg leading-relaxed mb-6">SMALL-GROUP PILATES REFORMER & FITNESS CLASSES IN A CLEAN AND ELEGANT BOUTIQUE STUDIO - BUILT WITH PASSION FOR TRANSFORMING LIVES AND BUILDING A HEALTHIER COMMUNITY</p>
+        <div class="flex flex-wrap gap-3">
+          <span class="goal-pill active">All Programs</span>
+          <span class="goal-pill">Strength</span>
+          <span class="goal-pill">Mobility</span>
+          <span class="goal-pill">Mindfulness</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 reveal-stagger">
+      <article class="card overflow-hidden">
+        <div class="photo-wrap relative h-64 overflow-hidden">
+          <img class="img-noir w-full h-full object-cover" src="https://placehold.co/800x600/141414/059669?text=Pilates+Reformer" alt="Pilates Reformer Fundamentals" loading="lazy" />
+          <div class="scan-line"></div>
+        </div>
+        <div class="p-7">
+          <h3 class="font-display text-4xl mb-4">Pilates Reformer Fundamentals</h3>
+          <p class="text-[var(--fg-dim)] leading-relaxed mb-5">Master alignment, breath, and controlled movement. Perfect for beginners or post-injury.</p>
+          <div class="grid grid-cols-2 gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] mb-6">
+            <span>Duration: 1HR</span><span>Level: All</span><span>Equipment: Reformer</span><span>Frequency: Weekly</span>
+          </div>
+          <a href="/pilates-reformer-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Learn More →</a>
+        </div>
+      </article>
+
+      <article class="card overflow-hidden">
+        <div class="photo-wrap relative h-64 overflow-hidden">
+          <img class="img-noir w-full h-full object-cover" src="https://placehold.co/800x600/141414/059669?text=Iyengar+Yoga" alt="Iyengar Yoga" loading="lazy" />
+          <div class="scan-line"></div>
+        </div>
+        <div class="p-7">
+          <h3 class="font-display text-4xl mb-4">Iyengar Yoga</h3>
+          <p class="text-[var(--fg-dim)] leading-relaxed mb-5">Precision-focused yoga using props to support every body. Build strength and mindfulness.</p>
+          <div class="grid grid-cols-2 gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] mb-6">
+            <span>Duration: [TEXT NEEDED]</span><span>Level: All</span><span>Equipment: Props</span><span>Frequency: Weekly</span>
+          </div>
+          <a href="/iyengar-yoga-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Learn More →</a>
+        </div>
+      </article>
+
+      <article class="card overflow-hidden">
+        <div class="photo-wrap relative h-64 overflow-hidden">
+          <img class="img-noir w-full h-full object-cover" src="https://placehold.co/800x600/141414/059669?text=Total+Body+Sculpt" alt="Total Body Sculpt" loading="lazy" />
+          <div class="scan-line"></div>
+        </div>
+        <div class="p-7">
+          <h3 class="font-display text-4xl mb-4">Total Body Sculpt</h3>
+          <p class="text-[var(--fg-dim)] leading-relaxed mb-5">Dynamic strength training blending Pilates principles with functional movement.</p>
+          <div class="grid grid-cols-2 gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] mb-6">
+            <span>Duration: 1HR</span><span>Level: All</span><span>Equipment: Mixed</span><span>Frequency: Weekly</span>
+          </div>
+          <a href="/total-body-sculpt-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Learn More →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="py-24 lg:py-32 bg-white border-y border-[var(--border)]">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="max-w-4xl mb-16 reveal">
+      <div class="section-marker mb-6"><span>03 — Why Choose Us</span></div>
+      <h2 class="font-display text-6xl md:text-7xl leading-[0.9] mb-6">Why Aurora Residents Trust Svelte for Pilates & Fitness</h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-stagger">
+      <div class="card p-8"><i class="fa-solid fa-users text-[var(--accent)] text-3xl mb-6"></i><h3 class="font-display text-4xl mb-3">Small-Group Attention</h3><p class="text-[var(--fg-dim)]">Max 8 clients per class—personalized cues for every body</p></div>
+      <div class="card p-8"><i class="fa-solid fa-certificate text-[var(--accent)] text-3xl mb-6"></i><h3 class="font-display text-4xl mb-3">Certified Instructors</h3><p class="text-[var(--fg-dim)]">PMA, Iyengar, NASM certified—safety and expertise first</p></div>
+      <div class="card p-8"><i class="fa-solid fa-heart-pulse text-[var(--accent)] text-3xl mb-6"></i><h3 class="font-display text-4xl mb-3">Injury-Conscious</h3><p class="text-[var(--fg-dim)]">Modifications for every condition—no one gets left behind</p></div>
+      <div class="card p-8"><i class="fa-solid fa-hand-holding-heart text-[var(--accent)] text-3xl mb-6"></i><h3 class="font-display text-4xl mb-3">Community Over Competition</h3><p class="text-[var(--fg-dim)]">Celebrate progress, not perfection—your journey is yours</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="coaches" class="py-24 lg:py-32">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-12 gap-8 mb-16 reveal">
+      <div class="lg:col-span-5">
+        <div class="section-marker mb-6"><span>04 — Instructors</span></div>
+        <h2 class="font-display text-6xl md:text-7xl leading-[0.9]">Meet Your Instructor</h2>
+      </div>
+      <p class="lg:col-span-6 lg:col-start-7 text-lg text-[var(--fg-dim)] leading-relaxed self-end">All coaches hold Pilates Method Alliance, Iyengar Yoga, or NASM certifications.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-stagger">
+      <article class="flip-card" tabindex="0">
+        <div class="flip-inner">
+          <div class="flip-face">
+            <div class="photo-wrap relative h-full"><img class="img-noir w-full h-full object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Certified instructor" loading="lazy" /><div class="scan-line"></div></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white"><h3 class="font-display text-4xl">[TEXT NEEDED]</h3><p class="font-mono text-xs tracking-[0.18em] uppercase">Certified Instructor</p></div>
+          </div>
+          <div class="flip-face flip-back">
+            <div><h3 class="font-display text-4xl mb-4">[TEXT NEEDED]</h3><p class="text-[var(--fg-dim)] leading-relaxed mb-5">Credential: [TEXT NEEDED]</p><p class="text-[var(--fg-dim)] leading-relaxed">Signature workout: [TEXT NEEDED]</p></div>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Click to flip</span>
+          </div>
+        </div>
+      </article>
+      <article class="flip-card" tabindex="0">
+        <div class="flip-inner">
+          <div class="flip-face">
+            <div class="photo-wrap relative h-full"><img class="img-noir w-full h-full object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Certified instructor" loading="lazy" /><div class="scan-line"></div></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white"><h3 class="font-display text-4xl">[TEXT NEEDED]</h3><p class="font-mono text-xs tracking-[0.18em] uppercase">Certified Instructor</p></div>
+          </div>
+          <div class="flip-face flip-back">
+            <div><h3 class="font-display text-4xl mb-4">[TEXT NEEDED]</h3><p class="text-[var(--fg-dim)] leading-relaxed mb-5">Credential: [TEXT NEEDED]</p><p class="text-[var(--fg-dim)] leading-relaxed">Signature workout: [TEXT NEEDED]</p></div>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Click to flip</span>
+          </div>
+        </div>
+      </article>
+      <article class="flip-card" tabindex="0">
+        <div class="flip-inner">
+          <div class="flip-face">
+            <div class="photo-wrap relative h-full"><img class="img-noir w-full h-full object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Certified instructor" loading="lazy" /><div class="scan-line"></div></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white"><h3 class="font-display text-4xl">[TEXT NEEDED]</h3><p class="font-mono text-xs tracking-[0.18em] uppercase">Certified Instructor</p></div>
+          </div>
+          <div class="flip-face flip-back">
+            <div><h3 class="font-display text-4xl mb-4">[TEXT NEEDED]</h3><p class="text-[var(--fg-dim)] leading-relaxed mb-5">Credential: [TEXT NEEDED]</p><p class="text-[var(--fg-dim)] leading-relaxed">Signature workout: [TEXT NEEDED]</p></div>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Click to flip</span>
+          </div>
+        </div>
+      </article>
+      <article class="flip-card" tabindex="0">
+        <div class="flip-inner">
+          <div class="flip-face">
+            <div class="photo-wrap relative h-full"><img class="img-noir w-full h-full object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Certified instructor" loading="lazy" /><div class="scan-line"></div></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent text-white"><h3 class="font-display text-4xl">[TEXT NEEDED]</h3><p class="font-mono text-xs tracking-[0.18em] uppercase">Certified Instructor</p></div>
+          </div>
+          <div class="flip-face flip-back">
+            <div><h3 class="font-display text-4xl mb-4">[TEXT NEEDED]</h3><p class="text-[var(--fg-dim)] leading-relaxed mb-5">Credential: [TEXT NEEDED]</p><p class="text-[var(--fg-dim)] leading-relaxed">Signature workout: [TEXT NEEDED]</p></div>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Click to flip</span>
+          </div>
+        </div>
+      </article>
+    </div>
+    <!-- placeholder: needs instructor names, coach photos, credentials, and signature workouts -->
+  </div>
+</section>
+
+<section id="stories" class="py-24 lg:py-32 bg-white border-y border-[var(--border)]">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16 reveal">
+      <div>
+        <div class="section-marker mb-6"><span>05 — Member Stories</span></div>
+        <h2 class="font-display text-6xl md:text-7xl leading-[0.9]">What Aurora Members Say About Svelte</h2>
+      </div>
+      <a href="#booking" class="btn-primary pulse">Claim Your Intro Pass</a>
+    </div>
+
+    <div class="stories-viewport reveal" id="storiesViewport">
+      <div class="stories-track" id="storiesTrack">
+        <article class="story-card card p-8">
+          <img class="img-noir w-16 h-16 rounded-full object-cover mb-6" src="https://placehold.co/160x160/141414/059669?text=SM" alt="Sarah M." loading="lazy" />
+          <p class="text-xl leading-relaxed mb-6">"After my knee surgery, I was nervous to try fitness again. Svelte's instructors modified every move for me—and in 3 months, I'm stronger than before!"</p>
+          <cite class="font-mono text-xs uppercase tracking-[0.18em] not-italic text-[var(--accent)]">— Sarah M., Aurora Highlands</cite>
+        </article>
+        <article class="story-card card p-8">
+          <img class="img-noir w-16 h-16 rounded-full object-cover mb-6" src="https://placehold.co/160x160/141414/059669?text=MT" alt="Michael T." loading="lazy" />
+          <p class="text-xl leading-relaxed mb-6">"Finally, a studio that feels like community, not a competition. The Reformer classes are challenging but never intimidating."</p>
+          <cite class="font-mono text-xs uppercase tracking-[0.18em] not-italic text-[var(--accent)]">— Michael T., Bayview Village</cite>
+        </article>
+        <article class="story-card card p-8">
+          <img class="img-noir w-16 h-16 rounded-full object-cover mb-6" src="https://placehold.co/160x160/141414/059669?text=PL" alt="Priya L." loading="lazy" />
+          <p class="text-xl leading-relaxed mb-6">"The small-group format means I actually get attention. My form has improved so much, and I've never felt more confident."</p>
+          <cite class="font-mono text-xs uppercase tracking-[0.18em] not-italic text-[var(--accent)]">— Priya L., St. Andrews</cite>
+        </article>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-8" id="storyDots" aria-label="Member story carousel pagination">
+      <button class="dot active" aria-label="Story 1"></button>
+      <button class="dot" aria-label="Story 2"></button>
+      <button class="dot" aria-label="Story 3"></button>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="py-24 lg:py-32">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="max-w-4xl mb-16 reveal">
+      <div class="section-marker mb-6"><span>06 — How It Works</span></div>
+      <h2 class="font-display text-6xl md:text-7xl leading-[0.9] mb-6">FROM TEST-DRIVE TO LIFESTYLE</h2>
+      <p class="text-lg text-[var(--fg-dim)] leading-relaxed">The most important part of your journey is the day you choose to start. Before commitment comes understanding, a deeper knowledge of what it takes to become a better you. Use our New Client Pass to sample the benefits of all that Svelte offers. This is your time for self-exploration: experiment with our class style. Choose your teacher and then practice, practice, practice until routine becomes lifestyle.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-stagger">
+      <div class="card p-8"><div class="w-14 h-14 rounded-full border border-[var(--accent)] flex items-center justify-center font-display text-3xl text-[var(--accent)] mb-6">1</div><h3 class="font-display text-4xl mb-3">Book Your Intro Pass</h3><p class="text-[var(--fg-dim)]">Claim your $15 intro offer online or text us. No obligation.</p></div>
+      <div class="card p-8"><div class="w-14 h-14 rounded-full border border-[var(--accent)] flex items-center justify-center font-display text-3xl text-[var(--accent)] mb-6">2</div><h3 class="font-display text-4xl mb-3">Meet Your Instructor</h3><p class="text-[var(--fg-dim)]">Arrive 15 min early for a personalized consultation and studio tour.</p></div>
+      <div class="card p-8"><div class="w-14 h-14 rounded-full border border-[var(--accent)] flex items-center justify-center font-display text-3xl text-[var(--accent)] mb-6">3</div><h3 class="font-display text-4xl mb-3">Experience Your First Class</h3><p class="text-[var(--fg-dim)]">Small-group attention, modifications provided, celebrate your progress.</p></div>
+      <div class="card p-8"><div class="w-14 h-14 rounded-full border border-[var(--accent)] flex items-center justify-center font-display text-3xl text-[var(--accent)] mb-6">4</div><h3 class="font-display text-4xl mb-3">Build Your Routine</h3><p class="text-[var(--fg-dim)]">Choose a class pass or unlimited membership that fits your goals.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="offerings" class="py-24 lg:py-32 bg-white border-y border-[var(--border)]">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="max-w-4xl mb-16 reveal">
+      <div class="section-marker mb-6"><span>07 — Offerings</span></div>
+      <h2 class="font-display text-6xl md:text-7xl leading-[0.9]">Pilates Reformer • Iyengar Yoga • Total Body Sculpt</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 reveal-stagger">
+      <article class="card p-8">
+        <i class="fa-solid fa-person-running text-[var(--accent)] text-3xl mb-6"></i>
+        <h3 class="font-display text-4xl mb-5">Pilates Reformer</h3>
+        <ul class="space-y-3 text-[var(--fg-dim)] mb-8">
+          <li>Small-group (max 8)</li><li>Certified instructors</li><li>Modifications for all levels</li><li>Build strength & flexibility</li>
+        </ul>
+        <a href="/pilates-reformer-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Pilates Reformer in Aurora →</a>
+      </article>
+      <article class="card p-8">
+        <i class="fa-solid fa-spa text-[var(--accent)] text-3xl mb-6"></i>
+        <h3 class="font-display text-4xl mb-5">Iyengar Yoga</h3>
+        <ul class="space-y-3 text-[var(--fg-dim)] mb-8">
+          <li>Precision-focused practice</li><li>Props for every body</li><li>Build mindfulness & strength</li><li>All levels welcome</li>
+        </ul>
+        <a href="/iyengar-yoga-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Iyengar Yoga classes →</a>
+      </article>
+      <article class="card p-8">
+        <i class="fa-solid fa-dumbbell text-[var(--accent)] text-3xl mb-6"></i>
+        <h3 class="font-display text-4xl mb-5">Total Body Sculpt</h3>
+        <ul class="space-y-3 text-[var(--fg-dim)] mb-8">
+          <li>Dynamic strength training</li><li>Pilates-inspired movements</li><li>No two classes the same</li><li>Tone & energize</li>
+        </ul>
+        <a href="/total-body-sculpt-aurora" class="font-heading text-sm uppercase tracking-[0.16em] text-[var(--accent)]">Total Body Sculpt →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="py-24 lg:py-32">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <div class="section-marker mb-6"><span>08 — About Us</span></div>
+        <h2 class="font-display text-6xl md:text-7xl leading-[0.9] mb-8">WELCOME TO YOUR STUDIO!</h2>
+        <p class="text-lg text-[var(--fg-dim)] leading-relaxed mb-8">Unlike overcrowded gyms that often leave you feeling lost and neglected, our clients say that they most love the individualized attention they receive that keeps them injury free, and the friendly environment that allows them to feel supported on the path to living the healthy lifestyle they desire.</p>
+        <p class="text-lg text-[var(--fg-dim)] leading-relaxed">Founded in Aurora to bring boutique, injury-conscious fitness to our community. We believe fitness should feel supportive, not intimidating—and that every body deserves personalized attention.</p>
+      </div>
+      <div class="reveal-stagger grid grid-cols-3 gap-4">
+        <img class="img-noir rounded-xl w-full h-80 object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Instructor headshot" loading="lazy" />
+        <img class="img-noir rounded-xl w-full h-80 object-cover mt-10" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Instructor headshot" loading="lazy" />
+        <img class="img-noir rounded-xl w-full h-80 object-cover" src="https://placehold.co/600x800/141414/059669?text=Coach" alt="Instructor headshot" loading="lazy" />
+        <!-- placeholder: needs real team photos -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="audience" class="py-24 lg:py-32 bg-white border-y border-[var(--border)]">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+      <div class="reveal">
+        <div class="section-marker mb-6"><span>09 — Audience We Serve</span></div>
+        <h2 class="font-display text-6xl md:text-7xl leading-[0.9]">Proudly Serving Aurora and York Region</h2>
+      </div>
+      <div class="reveal">
+        <p class="text-lg text-[var(--fg-dim)] leading-relaxed mb-8">We're located at 520 Industrial Parkway South (lower level, Bellerby Wellness Studio), just minutes from:</p>
+        <ul class="grid sm:grid-cols-2 gap-4 text-lg">
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Aurora residents seeking boutique fitness</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Post-injury or mobility-conscious clients</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Beginners to Pilates or yoga</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Professionals seeking stress-relief + strength</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Community-focused fitness enthusiasts</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Aurora Highlands</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>Bayview Village</li>
+          <li><i class="fa-solid fa-check text-[var(--accent)] mr-3"></i>St. Andrews</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="booking" class="py-24 lg:py-32">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-5 reveal">
+        <div class="section-marker mb-6"><span>10 — Booking</span></div>
+        <h2 class="font-display text-6xl md:text-7xl leading-[0.9] mb-6">Ready to Create Your Best Version?</h2>
+        <p class="text-lg text-[var(--fg-dim)] leading-relaxed mb-8">Claim your $15 Intro Pass today—includes 1 class, studio tour, and personalized consultation with a certified instructor. No obligation. No pressure.</p>
+
+        <aside class="card p-8">
+          <h3 class="font-display text-4xl mb-6">Contact Us</h3>
+          <div class="space-y-5 text-[var(--fg-dim)]">
+            <p><i class="fa-solid fa-location-dot text-[var(--accent)] mr-3"></i>520 Industrial Parkway South, Aurora, Ontario</p>
+            <p><i class="fa-solid fa-building text-[var(--accent)] mr-3"></i>Located: lower level inside, BELLERBY WELLNESS STUDIO</p>
+            <p><i class="fa-solid fa-phone text-[var(--accent)] mr-3"></i><a href="tel:+14167093262">(416) 709-3262</a></p>
+            <p><i class="fa-solid fa-envelope text-[var(--accent)] mr-3"></i><a href="mailto:info@sveltefitnessstudio.com">info@sveltefitnessstudio.com</a></p>
+            <p><i class="fa-solid fa-clock text-[var(--accent)] mr-3"></i>Tuesday & Thursday 8am - 8pm (Closed between 12pm and 4pm)<br />Wednesday & Friday 8am -12pm</p>
+          </div>
+        </aside>
+      </div>
+
+      <form id="bookingForm" class="lg:col-span-6 lg:col-start-7 card p-8 md:p-10 reveal" action="#" method="post">
+        <div class="grid md:grid-cols-2 gap-5 mb-6">
+          <label><span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">Name</span><input class="mt-2" type="text" name="name" autocomplete="name" /></label>
+          <label><span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">Phone</span><input class="mt-2" type="tel" name="phone" autocomplete="tel" /></label>
+        </div>
+        <label class="block mb-6"><span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">Email*</span><input class="mt-2" type="email" name="email" autocomplete="email" required /></label>
+        <div class="mb-6">
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)] block mb-3">Goal</span>
+          <div class="flex flex-wrap gap-3">
+            <button type="button" class="goal-pill active">Pilates Reformer</button>
+            <button type="button" class="goal-pill">Iyengar Yoga</button>
+            <button type="button" class="goal-pill">Total Body Sculpt</button>
+            <button type="button" class="goal-pill">Online Zoom Classes</button>
+          </div>
+        </div>
+        <div class="mb-7">
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)] block mb-3">Preferred Time</span>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <button type="button" class="time-radio active">Morning</button>
+            <button type="button" class="time-radio">Midday</button>
+            <button type="button" class="time-radio">Evening</button>
+          </div>
+        </div>
+        <label class="block mb-8"><span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted)]">Message</span><textarea class="mt-2 min-h-32" name="message"></textarea></label>
+        <button type="submit" class="btn-primary pulse w-full">Book Your Free Intro Class →</button>
+        <p class="text-sm text-[var(--muted)] mt-5">📞 Prefer to talk? Text us: (416) 709-3262</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="newsletter" class="py-20 bg-[var(--accent)] text-white">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-8 items-center reveal">
+    <div>
+      <div class="font-mono text-xs tracking-[0.22em] uppercase mb-4">Subscribe</div>
+      <h2 class="font-display text-5xl md:text-6xl leading-[0.9]">SUBSCRIBE TO OUR NEWSLETTER AND STAY CONNECTED WITH WEEKLY UPDATES FROM SVELTE STUDIO!</h2>
+    </div>
+    <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3">
+      <input type="email" required placeholder="Email Address" aria-label="Email Address" />
+      <button type="submit" class="btn-secondary bg-white">Sign up</button>
+    </form>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="bg-[#050505] text-white pt-20 pb-28 md:pb-12">
+    <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div>
+          <h2 class="font-display text-4xl mb-3">SVELTE FITNESS STUDIO</h2>
+          <p class="text-white/70">SVELTE • Aurora's Supportive Fitness Studio</p>
+          <p class="font-display text-3xl mt-8">STRONGER . BETTER. TOGETHER</p>
+        </div>
+        <div>
+          <h3 class="font-heading uppercase tracking-[0.18em] mb-5">Quick links</h3>
+          <ul class="space-y-3 text-white/70">
+            <li><a href="#curriculum">Classes</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#coaches">Instructors</a></li><li><a href="#booking">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-heading uppercase tracking-[0.18em] mb-5">Services</h3>
+          <ul class="space-y-3 text-white/70">
+            <li>Pilates Reformer</li><li>Iyengar Yoga</li><li>Total Body Sculpt</li><li>Cycle, Row, Barre</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-heading uppercase tracking-[0.18em] mb-5">Contact</h3>
+          <div class="space-y-3 text-white/70">
+            <p>520 Industrial Parkway South, Aurora, Ontario</p>
+            <p><a href="tel:+14167093262">(416) 709-3262</a></p>
+            <p><a href="mailto:info@sveltefitnessstudio.com">info@sveltefitnessstudio.com</a></p>
+            <div class="flex gap-4 pt-3">
+              <a href="https://facebook.com/sveltefitnessstudio" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://instagram.com/svelte_studio" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="font-mono text-xs tracking-[0.16em] uppercase text-white/50 mt-8">© 2026 Svelte Fitness Studio. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="sticky-cta" id="stickyCta">
+    <div class="max-w-xl mx-auto bg-[#050505] text-white border border-white/10 shadow-2xl p-3 flex gap-3 items-center justify-between">
+      <div class="hidden sm:block">
+        <div class="font-display text-2xl leading-none">Claim your $15 Intro Pass</div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.14em] text-white/60">No obligation. No pressure.</div>
+      </div>
+      <a href="tel:+14167093262" class="btn-secondary flex-1 sm:flex-none">Text Us</a>
+      <a href="#booking" class="btn-primary pulse flex-1 sm:flex-none">Book Now</a>
+    </div>
+  </div>
+
+  <div class="toast bg-[#050505] text-white border border-white/10 shadow-2xl px-6 py-4" id="toast">
+    <div class="font-heading uppercase tracking-[0.16em] text-sm">Message sent</div>
+    <div class="text-white/70 text-sm mt-1">Thank you. Svelte Fitness Studio will follow up soon.</div>
+  </div>
+
+  <script>
+    const frames = document.querySelectorAll(".reel-frame");
+    const progress = document.getElementById("reelProgress");
+    const chapter = document.getElementById("chapterNumber");
+    const duration = 5200;
+    let currentFrame = 0;
+    let startTime = performance.now();
+
+    function setFrame(index) {
+      frames.forEach((frame, i) => frame.classList.toggle("active", i === index));
+      chapter.textContent = String(index + 1).padStart(2, "0") + " / " + String(frames.length).padStart(2, "0");
+    }
+
+    function reelLoop(now) {
+      const elapsed = now - startTime;
+      const pct = Math.min(100, elapsed / duration * 100);
+      progress.style.width = pct + "%";
+      if (elapsed >= duration) {
+        currentFrame = (currentFrame + 1) % frames.length;
+        setFrame(currentFrame);
+        startTime = now;
+        progress.style.width = "0%";
+      }
+      requestAnimationFrame(reelLoop);
+    }
+    requestAnimationFrame(reelLoop);
+
+    document.getElementById("muteToggle").addEventListener("click", function () {
+      this.classList.toggle("opacity-50");
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16 });
+
+    document.querySelectorAll(".reveal, .reveal-stagger").forEach(el => revealObserver.observe(el));
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = parseFloat(el.dataset.count);
+        const decimals = String(target).includes(".") ? 1 : 0;
+        const start = performance.now();
+        const total = 1400;
+
+        function tick(now) {
+          const t = Math.min(1, (now - start) / total);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = (target * eased).toFixed(decimals);
+          if (t < 1) requestAnimationFrame(tick);
+          else el.textContent = target.toFixed(decimals);
+        }
+        requestAnimationFrame(tick);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.45 });
+
+    document.querySelectorAll(".number-display").forEach(el => counterObserver.observe(el));
+
+    document.querySelectorAll(".flip-card").forEach(card => {
+      card.addEventListener("click", () => card.classList.toggle("flipped"));
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          card.classList.toggle("flipped");
+        }
+      });
+    });
+
+    const stickyCta = document.getElementById("stickyCta");
+    const hero = document.getElementById("hero");
+    const stickyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        stickyCta.classList.toggle("show", !entry.isIntersecting);
+      });
+    }, { threshold: 0 });
+    stickyObserver.observe(hero);
+
+    const toast = document.getElementById("toast");
+    function showToast() {
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+    document.getElementById("bookingForm").addEventListener("submit", e => {
+      e.preventDefault();
+      showToast();
+      e.currentTarget.reset();
+    });
+    document.getElementById("newsletterForm").addEventListener("submit", e => {
+      e.preventDefault();
+      showToast();
+      e.currentTarget.reset();
+    });
+
+    document.querySelectorAll(".goal-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        const parent = pill.parentElement;
+        parent.querySelectorAll(".goal-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".time-radio").forEach(radio => {
+      radio.addEventListener("click", () => {
+        const parent = radio.parentElement;
+        parent.querySelectorAll(".time-radio").forEach(p => p.classList.remove("active"));
+        radio.classList.add("active");
+      });
+    });
+
+    const mobileToggle = document.getElementById("mobileToggle");
+    const mobilePanel = document.getElementById("mobilePanel");
+    mobileToggle.addEventListener("click", () => {
+      const isOpen = mobilePanel.classList.toggle("open");
+      mobileToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+    mobilePanel.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      mobilePanel.classList.remove("open");
+      mobileToggle.setAttribute("aria-expanded", "false");
+    }));
+
+    const viewport = document.getElementById("storiesViewport");
+    const track = document.getElementById("storiesTrack");
+    const dots = Array.from(document.querySelectorAll("#storyDots .dot"));
+    let storyIndex = 0;
+    let currentX = 0;
+    let startX = 0;
+    let dragX = 0;
+    let isDragging = false;
+    let velocity = 0;
+    let lastX = 0;
+    let lastT = 0;
+
+    function cardWidth() {
+      const card = track.querySelector(".story-card");
+      return card.getBoundingClientRect().width + 24;
+    }
+
+    function maxTranslate() {
+      return -((track.children.length - 1) * cardWidth());
+    }
+
+    function updateDots() {
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === storyIndex));
+    }
+
+    function goStory(index) {
+      storyIndex = Math.max(0, Math.min(track.children.length - 1, index));
+      currentX = -(storyIndex * cardWidth());
+      track.style.transition = "transform .5s cubic-bezier(.2,.8,.2,1)";
+      track.style.transform = `translateX(${currentX}px)`;
+      updateDots();
+    }
+
+    dots.forEach((dot, i) => dot.addEventListener("click", () => goStory(i)));
+
+    viewport.addEventListener("pointerdown", e => {
+      isDragging = true;
+      startX = e.clientX;
+      dragX = currentX;
+      lastX = e.clientX;
+      lastT = performance.now();
+      track.style.transition = "none";
+      viewport.setPointerCapture(e.pointerId);
+    });
+
+    viewport.addEventListener("pointermove", e => {
+      if (!isDragging) return;
+      const now = performance.now();
+      const dx = e.clientX - startX;
+      let next = dragX + dx;
+      const min = maxTranslate();
+      if (next > 0) next = next * 0.28;
+      if (next < min) next = min + (next - min) * 0.28;
+      track.style.transform = `translateX(${next}px)`;
+      velocity = (e.clientX - lastX) / Math.max(1, now - lastT);
+      lastX = e.clientX;
+      lastT = now;
+    });
+
+    viewport.addEventListener("pointerup", () => {
+      if (!isDragging) return;
+      isDragging = false;
+      const moved = parseFloat(track.style.transform.replace("translateX(", "")) || currentX;
+      const projected = moved + velocity * 180;
+      storyIndex = Math.round(Math.abs(projected) / cardWidth());
+      goStory(storyIndex);
+    });
+
+    setInterval(() => {
+      if (!isDragging) goStory((storyIndex + 1) % track.children.length);
+    }, 6000);
+
+    document.addEventListener("mousemove", e => {
+      const grain = document.getElementById("grain");
+      const x = (e.clientX / window.innerWidth - 0.5) * 18;
+      const y = (e.clientY / window.innerHeight - 0.5) * 18;
+      grain.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    window.addEventListener("resize", () => goStory(storyIndex));
+  </script>
+
+</body>
+</html>
